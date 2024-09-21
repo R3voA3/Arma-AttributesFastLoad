@@ -63,32 +63,32 @@ switch _mode do
 
         //--- Init UI
         _ctrlGroup = _params select 0;
-        (ctrlParent _ctrlGroup) displayAddEventHandler ["keydown", {with uiNamespace do {['keydown', [AmmoBox_ctrlGroup, _this select 1, _this select 2, _this select 3], objNull] call AmmoBox_script;};}];
-        //_ctrlGroup ctrladdeventhandler ["keydown", {with uinamespace do {['keydown', _this, objnull] call AmmoBox_script;};}];
-        _ctrlGroup ctrlAddEventHandler ["setfocus", {with uiNamespace do {AmmoBox_ctrlGroup = _this select 0;};}];
-        _ctrlGroup ctrlAddEventHandler ["killfocus", {with uiNamespace do {AmmoBox_ctrlGroup = nil;};}];
+        (ctrlParent _ctrlGroup) displayAddEventHandler ["KeyDown", {with uiNamespace do {['KeyDown', [AmmoBox_ctrlGroup, _this select 1, _this select 2, _this select 3], objNull] call AmmoBox_script;};}];
+        //_ctrlGroup ctrladdeventhandler ["KeyDown", {with uinamespace do {['KeyDown', _this, objnull] call AmmoBox_script;};}];
+        _ctrlGroup ctrlAddEventHandler ["SetFocus", {with uiNamespace do {AmmoBox_ctrlGroup = _this select 0;};}];
+        _ctrlGroup ctrlAddEventHandler ["KillFocus", {with uiNamespace do {AmmoBox_ctrlGroup = nil;};}];
 
         _ctrlType = _ctrlGroup controlsGroupCtrl 103;
-        _ctrlType ctrlAddEventHandler ["toolboxselchanged", {with uiNamespace do {['typeChanged', _this, objNull] call AmmoBox_script;};}];
+        _ctrlType ctrlAddEventHandler ["ToolBoxSelChanged", {with uiNamespace do {['typeChanged', _this, objNull] call AmmoBox_script;};}];
         _ctrlType lbSetCurSel AmmoBox_type;
         ["typeChanged", [_ctrlType, AmmoBox_type], objNull] call AmmoBox_script;
 
         _ctrlFilter = _ctrlGroup controlsGroupCtrl 100;
-        _ctrlFilter ctrlAddEventHandler ["toolboxselchanged", {with uiNamespace do {['filterChanged', _this, objNull] call AmmoBox_script;};}];
+        _ctrlFilter ctrlAddEventHandler ["ToolBoxSelChanged", {with uiNamespace do {['filterChanged', _this, objNull] call AmmoBox_script;};}];
         ["filterChanged", [_ctrlFilter, 0], objNull] call AmmoBox_script;
 
         _ctrlList = _ctrlGroup controlsGroupCtrl 101;
-        _ctrlList ctrlAddEventHandler ["lbselchanged", {with uiNamespace do {["listSelect", [ctrlParentControlsGroup (_this select 0)], objNull] call AmmoBox_script;};}];
-        _ctrlList ctrlAddEventHandler ["lbdblclick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), +1], objNull] call AmmoBox_script;};}];
+        _ctrlList ctrlAddEventHandler ["LBSelChanged", {with uiNamespace do {["listSelect", [ctrlParentControlsGroup (_this select 0)], objNull] call AmmoBox_script;};}];
+        _ctrlList ctrlAddEventHandler ["LBDblClick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), +1], objNull] call AmmoBox_script;};}];
 
         _ctrlArrowLeft = _ctrlGroup controlsGroupCtrl 313102;
-        _ctrlArrowLeft ctrlAddEventHandler ["buttonclick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), -1], objNull] call AmmoBox_script;};}];
+        _ctrlArrowLeft ctrlAddEventHandler ["ButtonClick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), -1], objNull] call AmmoBox_script;};}];
         _ctrlArrowRight = _ctrlGroup controlsGroupCtrl 313103;
-        _ctrlArrowRight ctrlAddEventHandler ["buttonclick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), +1], objNull] call AmmoBox_script;};}];
+        _ctrlArrowRight ctrlAddEventHandler ["ButtonClick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), +1], objNull] call AmmoBox_script;};}];
 
         _ctrlButtonCustom = _ctrlGroup controlsGroupCtrl 104;
         _ctrlButtonCustom ctrlSetText localize "str_disp_arcmap_clear";
-        _ctrlButtonCustom ctrlAddEventHandler ["buttonclick", {with uiNamespace do {["clear", [ctrlParentControlsGroup (_this select 0)], objNull] call AmmoBox_script;};}];
+        _ctrlButtonCustom ctrlAddEventHandler ["ButtonClick", {with uiNamespace do {["clear", [ctrlParentControlsGroup (_this select 0)], objNull] call AmmoBox_script;};}];
 
         if (isNil "AmmoBox_list") then
         {
@@ -271,11 +271,11 @@ switch _mode do
         AmmoBox_type = _type;
 
         _ctrlArrowLeft = _ctrlGroup controlsGroupCtrl 313102;
-        _ctrlArrowLeft ctrlSetText (if (_type > 0) then {SYMBOL_VIRTUAL_0} else {"-"});
+        _ctrlArrowLeft ctrlSetText (["-", SYMBOL_VIRTUAL_0] select (_type > 0));
         //_ctrlArrowLeft ctrlenable (_value > -1);
 
         _ctrlArrowRight = _ctrlGroup controlsGroupCtrl 313103;
-        _ctrlArrowRight ctrlSetText (if (_type > 0) then {SYMBOL_VIRTUAL_1} else {"+"});
+        _ctrlArrowRight ctrlSetText (["+", SYMBOL_VIRTUAL_1] select (_type > 0));
         //_ctrlArrowRight ctrlenable (_value > -1);
 
         ["filterChanged", [_ctrlGroup, AmmoBox_filter], objNull] call AmmoBox_script;
@@ -344,7 +344,7 @@ switch _mode do
                             _ctrlList lnbSetValue [[_lnbAdd, 0], _value];
                             _ctrlList lnbSetValue [[_lnbAdd, 1], _type];
                             _ctrlList lnbSetPicture [[_lnbAdd, 0], _picture];
-                            private _alpha = if (_value != 0) then {1} else {0.5};
+                            private _alpha = [0.5, 1] select (_value != 0);
                             _ctrlList lnbSetColor [[_lnbAdd, 1], [1, 1, 1, _alpha]];
                             _ctrlList lnbSetColor [[_lnbAdd, 2], [1, 1, 1, _alpha]];
                             _ctrlList lnbSetTooltip [[_lnbAdd, 0], _displayName];
@@ -402,20 +402,20 @@ switch _mode do
 
             if (AmmoBox_type > 0) then {
                 _value = if (_add > 0) then {1} else {0};
-                _ctrlList lnbSetText [[_cursel, 2], if (_value > 0) then {SYMBOL_VIRTUAL_1} else {SYMBOL_VIRTUAL_0}];
+                _ctrlList lnbSetText [[_cursel, 2], [SYMBOL_VIRTUAL_0, SYMBOL_VIRTUAL_1] select (_value > 0)];
             } else {
                 _value = (_value + _add) max 0;
                 //_load = progressposition _ctrlLoad + _add * _coef;
                 _load = 0;
                 if ((_load <= 1 && _value >= 0) || _value == 0) then {
                     //if (_value > 0 || (_value == 0 && _add < 0)) then {_ctrlLoad progresssetposition _load};
-                    _valueText = if (AmmoBox_type > 0) then {if (_value > 0) then {SYMBOL_VIRTUAL_1} else {SYMBOL_VIRTUAL_0}} else {str _value};
+                    _valueText = if (AmmoBox_type > 0) then {[SYMBOL_VIRTUAL_0, SYMBOL_VIRTUAL_1] select (_value > 0)} else {str _value};
                     _ctrlList lnbSetText [[_cursel, 2], str _value];
                 };
             };
             _values set [_index, _value];
             _ctrlList lnbSetValue [[_cursel, 0], _value];
-            _alpha = if (_value != 0) then {1} else {0.5};
+            _alpha = [0.5, 1] select (_value != 0);
             _ctrlList lnbSetColor [[_cursel, 1], [1, 1, 1, _alpha]];
             _ctrlList lnbSetColor [[_cursel, 2], [1, 1, 1, _alpha]];
             ["listSelect", [_ctrlGroup], objNull] call AmmoBox_script;
@@ -456,7 +456,7 @@ switch _mode do
         ["filterChanged", _params, objNull] call AmmoBox_script;
     };
 
-    case "keydown":
+    case "KeyDown":
     {
         _ctrlGroup = _params select 0;
         if !(isNil "_ctrlGroup") then {
