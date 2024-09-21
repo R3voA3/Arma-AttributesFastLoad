@@ -52,70 +52,70 @@ switch _mode do
 			} forEach _virtualCargo;
 		};
 
-		RscAttributeInventory_cargo = [[],[]];
+		RscAttributeInventory_cargo = [[], []];
 		{
-			RscAttributeInventory_cargo set [0,(RscAttributeInventory_cargo select 0) + (_x select 0)];
-			RscAttributeInventory_cargo set [1,(RscAttributeInventory_cargo select 1) + (_x select 1)];
+			RscAttributeInventory_cargo set [0, (RscAttributeInventory_cargo select 0) + (_x select 0)];
+			RscAttributeInventory_cargo set [1, (RscAttributeInventory_cargo select 1) + (_x select 1)];
 		} forEach _cargo;
 
 		_classes = RscAttributeInventory_cargo select 0;
-		{_classes set [_foreachindex,toLower _x];} forEach _classes;
+		{_classes set [_foreachindex, toLower _x];} forEach _classes;
 
 		//--- Init UI
 		_ctrlGroup = _params select 0;
-		(ctrlParent _ctrlGroup) displayAddEventHandler ["keydown",{with uiNamespace do {['keydown',[AmmoBox_ctrlGroup,_this select 1,_this select 2,_this select 3],objNull] call AmmoBox_script;};}];
-		//_ctrlGroup ctrladdeventhandler ["keydown",{with uinamespace do {['keydown',_this,objnull] call AmmoBox_script;};}];
-		_ctrlGroup ctrlAddEventHandler ["setfocus",{with uiNamespace do {AmmoBox_ctrlGroup = _this select 0;};}];
-		_ctrlGroup ctrlAddEventHandler ["killfocus",{with uiNamespace do {AmmoBox_ctrlGroup = nil;};}];
+		(ctrlParent _ctrlGroup) displayAddEventHandler ["keydown", {with uiNamespace do {['keydown', [AmmoBox_ctrlGroup, _this select 1, _this select 2, _this select 3], objNull] call AmmoBox_script;};}];
+		//_ctrlGroup ctrladdeventhandler ["keydown", {with uinamespace do {['keydown', _this, objnull] call AmmoBox_script;};}];
+		_ctrlGroup ctrlAddEventHandler ["setfocus", {with uiNamespace do {AmmoBox_ctrlGroup = _this select 0;};}];
+		_ctrlGroup ctrlAddEventHandler ["killfocus", {with uiNamespace do {AmmoBox_ctrlGroup = nil;};}];
 
 		_ctrlType = _ctrlGroup controlsGroupCtrl 103;
-		_ctrlType ctrlAddEventHandler ["toolboxselchanged",{with uiNamespace do {['typeChanged',_this,objNull] call AmmoBox_script;};}];
+		_ctrlType ctrlAddEventHandler ["toolboxselchanged", {with uiNamespace do {['typeChanged', _this, objNull] call AmmoBox_script;};}];
 		_ctrlType lbSetCurSel AmmoBox_type;
-		["typeChanged",[_ctrlType,AmmoBox_type],objNull] call AmmoBox_script;
+		["typeChanged", [_ctrlType, AmmoBox_type], objNull] call AmmoBox_script;
 
 		_ctrlFilter = _ctrlGroup controlsGroupCtrl 100;
-		_ctrlFilter ctrlAddEventHandler ["toolboxselchanged",{with uiNamespace do {['filterChanged',_this,objNull] call AmmoBox_script;};}];
-		["filterChanged",[_ctrlFilter,0],objNull] call AmmoBox_script;
+		_ctrlFilter ctrlAddEventHandler ["toolboxselchanged", {with uiNamespace do {['filterChanged', _this, objNull] call AmmoBox_script;};}];
+		["filterChanged", [_ctrlFilter, 0], objNull] call AmmoBox_script;
 
 		_ctrlList = _ctrlGroup controlsGroupCtrl 101;
-		_ctrlList ctrlAddEventHandler ["lbselchanged",{with uiNamespace do {["listSelect",[ctrlParentControlsGroup (_this select 0)],objNull] call AmmoBox_script;};}];
-		_ctrlList ctrlAddEventHandler ["lbdblclick",{with uiNamespace do {["listModify",[ctrlParentControlsGroup (_this select 0),+1],objNull] call AmmoBox_script;};}];
+		_ctrlList ctrlAddEventHandler ["lbselchanged", {with uiNamespace do {["listSelect", [ctrlParentControlsGroup (_this select 0)], objNull] call AmmoBox_script;};}];
+		_ctrlList ctrlAddEventHandler ["lbdblclick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), +1], objNull] call AmmoBox_script;};}];
 
 		_ctrlArrowLeft = _ctrlGroup controlsGroupCtrl 313102;
-		_ctrlArrowLeft ctrlAddEventHandler ["buttonclick",{with uiNamespace do {["listModify",[ctrlParentControlsGroup (_this select 0),-1],objNull] call AmmoBox_script;};}];
+		_ctrlArrowLeft ctrlAddEventHandler ["buttonclick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), -1], objNull] call AmmoBox_script;};}];
 		_ctrlArrowRight = _ctrlGroup controlsGroupCtrl 313103;
-		_ctrlArrowRight ctrlAddEventHandler ["buttonclick",{with uiNamespace do {["listModify",[ctrlParentControlsGroup (_this select 0),+1],objNull] call AmmoBox_script;};}];
+		_ctrlArrowRight ctrlAddEventHandler ["buttonclick", {with uiNamespace do {["listModify", [ctrlParentControlsGroup (_this select 0), +1], objNull] call AmmoBox_script;};}];
 
 		_ctrlButtonCustom = _ctrlGroup controlsGroupCtrl 104;
 		_ctrlButtonCustom ctrlSetText localize "str_disp_arcmap_clear";
-		_ctrlButtonCustom ctrlAddEventHandler ["buttonclick",{with uiNamespace do {["clear",[ctrlParentControlsGroup (_this select 0)],objNull] call AmmoBox_script;};}];
+		_ctrlButtonCustom ctrlAddEventHandler ["buttonclick", {with uiNamespace do {["clear", [ctrlParentControlsGroup (_this select 0)], objNull] call AmmoBox_script;};}];
 
 		if (isNil "AmmoBox_list") then
 		{
 			[ctrlParentControlsGroup (_params select 0)] spawn
 			{
 				disableSerialization;
-				startLoadingScreen ["","RscDisplayLoadMission"];
+				startLoadingScreen ["", "RscDisplayLoadMission"];
 
 				//--- Get weapons and magazines from curator addons
 				private _types =
 				[
-					["AssaultRifle","Shotgun","Rifle","SubmachineGun"],
+					["AssaultRifle", "Shotgun", "Rifle", "SubmachineGun"],
 					["MachineGun"],
 					["SniperRifle"],
-					["Launcher","MissileLauncher","RocketLauncher"],
+					["Launcher", "MissileLauncher", "RocketLauncher"],
 					["Handgun"],
 					["UnknownWeapon"],
-					["AccessoryMuzzle","AccessoryPointer","AccessorySights","AccessoryBipod"],
+					["AccessoryMuzzle", "AccessoryPointer", "AccessorySights", "AccessoryBipod"],
 					["Uniform"],
 					["Vest"],
 					["Backpack"],
-					["Headgear","Glasses"],
-					["Binocular","Compass","FirstAidKit","GPS","LaserDesignator","Map","Medikit","MineDetector","NVGoggles","Radio","Toolkit","Watch","UAVTerminal"]
+					["Headgear", "Glasses"],
+					["Binocular", "Compass", "FirstAidKit", "GPS", "LaserDesignator", "Map", "Medikit", "MineDetector", "NVGoggles", "Radio", "Toolkit", "Watch", "UAVTerminal"]
 				];
 
 				private _CfgWeapons = configFile >> "CfgWeapons";
-				private _list = [[],[],[],[],[],[],[],[],[],[],[],[]];
+				private _list = [[], [], [], [], [], [], [], [], [], [], [], []];
 
 				//--- Weapons, magazines and items
 				private _magazines = []; //--- Store magazines in an array and mark duplicates, so nthey don't appear in the list of all items
@@ -154,7 +154,7 @@ switch _mode do
 										([getText (_weaponCfg >> "displayName")] + (((_weaponCfg >> "linkeditems") call bis_fnc_returnchildren) apply { getText (_CfgWeapons >> getText (_x >> "item") >> "displayName") })) joinString " + ",
 										_weapon,
 										getText (_weaponCfg >> "picture"),
-										parseNumber (getNumber (_weaponCfg >> "type") in [4096,131072]),
+										parseNumber (getNumber (_weaponCfg >> "type") in [4096, 131072]),
 										false
 									];
 								};
@@ -278,7 +278,7 @@ switch _mode do
 		_ctrlArrowRight ctrlSetText (if (_type > 0) then {SYMBOL_VIRTUAL_1} else {"+"});
 		//_ctrlArrowRight ctrlenable (_value > -1);
 
-		["filterChanged",[_ctrlGroup,AmmoBox_filter],objNull] call AmmoBox_script;
+		["filterChanged", [_ctrlGroup, AmmoBox_filter], objNull] call AmmoBox_script;
 	};
 
 	case "filterChanged":
@@ -290,7 +290,7 @@ switch _mode do
 		private _ctrlList = _ctrlGroup controlsGroupCtrl 101;
 		//_ctrlLoad = _ctrlGroup controlsGroupCtrl 102;
 		//_ctrlFilterBackground = _ctrlGroup controlsGroupCtrl IDC_RSCATTRIBUTEINVENTORY_FILTERBACKGROUND;
-		private _list = uiNamespace getVariable ["AmmoBox_list",[[],[],[],[],[],[],[],[],[],[],[],[]]];
+		private _list = uiNamespace getVariable ["AmmoBox_list", [[], [], [], [], [], [], [], [], [], [], [], []]];
 
 		lnbClear _ctrlList;
 
@@ -298,8 +298,8 @@ switch _mode do
 			private _types = _x;
 			private _indexes = switch (_forEachIndex) do
 			{
-				case 1: { [6,7,8,9,10,11] };
-				default { [0,1,2,3,4,5] };
+				case 1: { [6, 7, 8, 9, 10, 11] };
+				default { [0, 1, 2, 3, 4, 5] };
 			};
 
 			{
@@ -339,15 +339,15 @@ switch _mode do
 						if ((_cursel == 0 && _value != 0) || (_cursel > 0)) then
 						{
 							private _valueText = if (AmmoBox_type > 0) then { [SYMBOL_VIRTUAL_0, SYMBOL_VIRTUAL_1] select (_value > 0) } else { str _value };
-							private _lnbAdd = _ctrlList lnbAddRow ["",_displayName,_valueText,""];
-							_ctrlList lnbSetData [[_lnbAdd,0],_class];
-							_ctrlList lnbSetValue [[_lnbAdd,0],_value];
-							_ctrlList lnbSetValue [[_lnbAdd,1],_type];
-							_ctrlList lnbSetPicture [[_lnbAdd,0],_picture];
+							private _lnbAdd = _ctrlList lnbAddRow ["", _displayName, _valueText, ""];
+							_ctrlList lnbSetData [[_lnbAdd, 0], _class];
+							_ctrlList lnbSetValue [[_lnbAdd, 0], _value];
+							_ctrlList lnbSetValue [[_lnbAdd, 1], _type];
+							_ctrlList lnbSetPicture [[_lnbAdd, 0], _picture];
 							private _alpha = if (_value != 0) then {1} else {0.5};
-							_ctrlList lnbSetColor [[_lnbAdd,1],[1,1,1,_alpha]];
-							_ctrlList lnbSetColor [[_lnbAdd,2],[1,1,1,_alpha]];
-							_ctrlList lnbSetTooltip [[_lnbAdd,0],_displayName];
+							_ctrlList lnbSetColor [[_lnbAdd, 1], [1, 1, 1, _alpha]];
+							_ctrlList lnbSetColor [[_lnbAdd, 2], [1, 1, 1, _alpha]];
+							_ctrlList lnbSetTooltip [[_lnbAdd, 0], _displayName];
 
 							//if (_cursel == 0 && _value != 0) then
 							//{
@@ -368,12 +368,12 @@ switch _mode do
 			}
 			forEach _indexes;
 		}
-		forEach [[0],[1,3],[2]]; // 0 - Weapons, 1 - Items, 2 - Magazines, 3 - Backpacks
+		forEach [[0], [1, 3], [2]]; // 0 - Weapons, 1 - Items, 2 - Magazines, 3 - Backpacks
 
 		_ctrlList lnbSort [1, false];
 		_ctrlList lnbSetCurSelRow 0;
 
-		["listSelect",[_ctrlGroup],objNull] call AmmoBox_script;
+		["listSelect", [_ctrlGroup], objNull] call AmmoBox_script;
 	};
 
 	case "listModify":
@@ -384,7 +384,7 @@ switch _mode do
 		_ctrlList = _ctrlGroup controlsGroupCtrl 101;
 		//_ctrlLoad = _ctrlGroup controlsGroupCtrl 102;
 		_cursel = lnbCurSelRow _ctrlList;
-		_class = _ctrlList lnbData [_cursel,0];
+		_class = _ctrlList lnbData [_cursel, 0];
 		_value = _ctrlList lbValue (_cursel * COLUMNS); //--- ToDo: Use lnbValue once it's fixed
 		_type = _ctrlList lbValue (_cursel * COLUMNS + 1); //--- ToDo: Use lnbValue once it's fixed
 
@@ -402,7 +402,7 @@ switch _mode do
 
 			if (AmmoBox_type > 0) then {
 				_value = if (_add > 0) then {1} else {0};
-				_ctrlList lnbSetText [[_cursel,2],if (_value > 0) then {SYMBOL_VIRTUAL_1} else {SYMBOL_VIRTUAL_0}];
+				_ctrlList lnbSetText [[_cursel, 2], if (_value > 0) then {SYMBOL_VIRTUAL_1} else {SYMBOL_VIRTUAL_0}];
 			} else {
 				_value = (_value + _add) max 0;
 				//_load = progressposition _ctrlLoad + _add * _coef;
@@ -410,21 +410,21 @@ switch _mode do
 				if ((_load <= 1 && _value >= 0) || _value == 0) then {
 					//if (_value > 0 || (_value == 0 && _add < 0)) then {_ctrlLoad progresssetposition _load};
 					_valueText = if (AmmoBox_type > 0) then {if (_value > 0) then {SYMBOL_VIRTUAL_1} else {SYMBOL_VIRTUAL_0}} else {str _value};
-					_ctrlList lnbSetText [[_cursel,2],str _value];
+					_ctrlList lnbSetText [[_cursel, 2], str _value];
 				};
 			};
-			_values set [_index,_value];
-			_ctrlList lnbSetValue [[_cursel,0],_value];
+			_values set [_index, _value];
+			_ctrlList lnbSetValue [[_cursel, 0], _value];
 			_alpha = if (_value != 0) then {1} else {0.5};
-			_ctrlList lnbSetColor [[_cursel,1],[1,1,1,_alpha]];
-			_ctrlList lnbSetColor [[_cursel,2],[1,1,1,_alpha]];
-			["listSelect",[_ctrlGroup],objNull] call AmmoBox_script;
+			_ctrlList lnbSetColor [[_cursel, 1], [1, 1, 1, _alpha]];
+			_ctrlList lnbSetColor [[_cursel, 2], [1, 1, 1, _alpha]];
+			["listSelect", [_ctrlGroup], objNull] call AmmoBox_script;
 		};
 	};
 
 	case "listSelect":
 	{
-		private ["_ctrlGroup","_ctrlList","_cursel","_value","_ctrlArrowLeft","_buttonText"];
+		private ["_ctrlGroup", "_ctrlList", "_cursel", "_value", "_ctrlArrowLeft", "_buttonText"];
 		_ctrlGroup = _params select 0;
 		_ctrlList = _ctrlGroup controlsGroupCtrl 101;
 		_cursel = lnbCurSelRow _ctrlList;
@@ -438,22 +438,22 @@ switch _mode do
 
 		if (AmmoBox_filter > 0) then {
 			//--- Clear items in selected category
-			_list = uiNamespace getVariable ["AmmoBox_list",[[],[],[],[],[],[],[],[],[],[],[],[]]];
+			_list = uiNamespace getVariable ["AmmoBox_list", [[], [], [], [], [], [], [], [], [], [], [], []]];
 			_items = _list select (AmmoBox_filter - 1);
 			{
 				_class = _x select 1;
 				_classID = _classes find _class;
 				if (_classID >= 0) then {
-					_values set [_classID,0];
+					_values set [_classID, 0];
 				};
 			} forEach _items;
 		} else {
 			//--- Clear all
 			{
-				_values set [_foreachindex,0];
+				_values set [_foreachindex, 0];
 			} forEach _values;
 		};
-		["filterChanged",_params,objNull] call AmmoBox_script;
+		["filterChanged", _params, objNull] call AmmoBox_script;
 	};
 
 	case "keydown":
@@ -465,12 +465,12 @@ switch _mode do
 			switch _key do {
 				case DIK_LEFT;
 				case DIK_NUMPADMINUS: {
-					["listModify",[ctrlParentControlsGroup (_params select 0),if (_ctrl) then {-5} else {-1}],objNull] call AmmoBox_script;
+					["listModify", [ctrlParentControlsGroup (_params select 0), if (_ctrl) then {-5} else {-1}], objNull] call AmmoBox_script;
 					true
 				};
 				case DIK_RIGHT;
 				case DIK_NUMPADPLUS: {
-					["listModify",[ctrlParentControlsGroup (_params select 0),if (_ctrl) then {+5} else {+1}],objNull] call AmmoBox_script;
+					["listModify", [ctrlParentControlsGroup (_params select 0), if (_ctrl) then {+5} else {+1}], objNull] call AmmoBox_script;
 					true
 				};
 				default {false};
@@ -488,36 +488,36 @@ switch _mode do
 	{
 
 		//--- Sort items into categories and save. Will be loaded by BIS_fnc_initAmmoBox
-		_cargo = uiNamespace getVariable ["RscAttributeInventory_cargo",[[],[]]];
+		_cargo = uiNamespace getVariable ["RscAttributeInventory_cargo", [[], []]];
 		_cargoClasses = _cargo select 0;
 		_cargoValues = _cargo select 1;
-		_outputClasses = [[],[],[],[]]; // weapons, magazines, items, backpacks
-		_outputValues = [[],[],[],[]];
-		_output = [[[],[]],[[],[]],[[],[]],[[],[]]];
-		_isVirtual = (uiNamespace getVariable ["AmmoBox_type",0]) > 0;
+		_outputClasses = [[], [], [], []]; // weapons, magazines, items, backpacks
+		_outputValues = [[], [], [], []];
+		_output = [[[], []], [[], []], [[], []], [[], []]];
+		_isVirtual = (uiNamespace getVariable ["AmmoBox_type", 0]) > 0;
 		{
 			if (_x != 0) then {
 				_class = _cargoClasses select _foreachindex;
 				_index = switch true do {
-					case (getNumber (configFile >> "cfgweapons" >> _class >> "type") in [4096,131072]): {
+					case (getNumber (configFile >> "cfgweapons" >> _class >> "type") in [4096, 131072]): {
 						_class = configName (configFile >> "cfgweapons" >> _class);
-						[2,6] select (_x < 0);
+						[2, 6] select (_x < 0);
 					};
 					case (isClass (configFile >> "cfgweapons" >> _class)): {
 						_class = configName (configFile >> "cfgweapons" >> _class);
-						[0,4] select (_x < 0);
+						[0, 4] select (_x < 0);
 					};
 					case (isClass (configFile >> "cfgmagazines" >> _class)): {
 						_class = configName (configFile >> "cfgmagazines" >> _class);
-						[1,5] select (_x < 0);
+						[1, 5] select (_x < 0);
 					};
 					case (isClass (configFile >> "cfgvehicles" >> _class)): {
 						_class = configName (configFile >> "cfgvehicles" >> _class);
-						[3,7] select (_x < 0);
+						[3, 7] select (_x < 0);
 					};
 					case (isClass (configFile >> "cfgglasses" >> _class)): {
 						_class = configName (configFile >> "cfgglasses" >> _class);
-						[2,6] select (_x < 0);
+						[2, 6] select (_x < 0);
 					};
 					default {-1};
 				};
@@ -531,6 +531,6 @@ switch _mode do
 				};
 			};
 		} forEach _cargoValues;
-		str [_output,_isVirtual] //--- Save as a string. Serialized array takes too much space.
+		str [_output, _isVirtual] //--- Save as a string. Serialized array takes too much space.
 	};
 };
